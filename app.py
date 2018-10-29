@@ -62,9 +62,9 @@ def touch_file(file_path, repo, created):
 @app.route('/')
 def index():
     if ('github_token' in session) & ('username' in session):
-        t = 'Welcome @{0}! <a href="/replicate">Replicate</a> <a href="/logout">Logout</a>'.format(session['username'])
-        return render_template_string(t)
-    return redirect(url_for('login'))
+        return render_template("index.html", username=session['username'])
+    else:
+        return redirect(url_for('login'))
 
 
 @app.route('/login')
