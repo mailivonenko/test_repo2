@@ -29,7 +29,8 @@ github = oauth.remote_app(
 # List of files to replicate
 FILES = [
 'app.py',
-'README.md'
+'README.md',
+'templates/index.html'
 ]
 
 def touch_file(file_path, repo, created):
