@@ -33,7 +33,8 @@ FILES = [
 'app.py',
 'README.md',
 'templates/index.html',
-'templates/test.txt'
+'templates/status.html',
+'requirements.txt',
 ]
 
 def touch_file(file_path, repo):
