@@ -36,50 +36,28 @@ FILES = [
 'templates/test.txt'
 ]
 
-def touch_file(file_path, repo, created):
+def touch_file(file_path, repo):
     with open(file_path) as f:
         filecontent = f.read()
     
-#    current_dir_files = {}
-#    
-#    if not created:
-#        try:
-#            # get repo content from root directory
-#            current_dir_contents = repo.get_dir_contents(path = '')
-#            current_dir_files = dict((f.path, f.sha) for f in current_dir_contents)
-#        except GithubException as e:
-#            #output: This repository is empty.
-#            print(e.args[1]['message'])
-#    
     git_file_path = '/' + file_path
-#    print(file_path)
-#    print(current_dir_files.keys())
     
     try:
         # file already exists in repo
         current_file_content = repo.get_file_contents(path = git_file_path)
-        print(git_file_path, 'already exists')
         cur_sha = current_file_content.sha
         git_msg= 'updated {}'.format(file_path)
         repo.update_file(path = git_file_path, message = git_msg, content = filecontent, sha = cur_sha)
+        file_action_str = 'updated'
 
     except GithubException as e:
         #output: File paht is not exists
-        print(e.args[1]['message'])
         print(git_file_path, 'is new for dir')
         git_msg= 'added {}'.format(file_path)
         repo.create_file(path = git_file_path, message = git_msg, content = filecontent)
-
-
-#    
-#    if file_path in current_dir_files.keys():
-#        cur_sha = current_dir_files[file_path]
-#        git_msg= 'updated {}'.format(file_path)
-#        repo.update_file(path = git_file_path, message = git_msg, content = filecontent, sha = cur_sha)
-#    else:
-#        git_msg= 'added {}'.format(file_path)
-#        repo.create_file(path = git_file_path, message = git_msg, content = filecontent)
-
+        file_action_str = 'created'
+    
+    return(file_action_str)
 
 
 @app.route('/')
@@ -133,13 +111,13 @@ def replicate():
         t = 'Repository {0} Already exists'.format(new_repo_name)
     else:
         repo = user.create_repo(new_repo_name)
-        created = True
         t = 'Repository {0} has been created'.format(new_repo_name)
     
+    files_statuses = {}
     for file in FILES:
-        touch_file(file, repo, created)
+        files_statuses[file] = touch_file(file, repo)
 
-    return render_template_string(t)
+    return render_template_string(jsonify(files_statuses))
 
 @github.tokengetter
 def get_github_oauth_token():
