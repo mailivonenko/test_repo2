@@ -102,24 +102,21 @@ def replicate():
     new_repo_name = 'test_repo2'
     g1 = Github(session['github_token'][0])
     user = g1.get_user()
-    created = False
     
     #Check if repo name already exists
     current_repo_names = [repo.name for repo in user.get_repos()]
     if new_repo_name in current_repo_names:
         repo = user.get_repo(new_repo_name)
-        t = 'Repository {0} Already exists'.format(new_repo_name)
     else:
         repo = user.create_repo(new_repo_name)
-        t = 'Repository {0} has been created'.format(new_repo_name)
     
     files_statuses = {}
+    user_git_url = 'https://github.com/{0}/{1}'.format(session['username'], new_repo_name)
     for file in FILES:
         files_statuses[file] = touch_file(file, repo)
     
-    print(jsonify(files_statuses))
-    return jsonify(files_statuses)
-    return render_template_string(jsonify(files_statuses))
+    return render_template("status.html", files_statuses=files_statuses, user_git_url = user_git_url)
+
 
 @github.tokengetter
 def get_github_oauth_token():
