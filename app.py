@@ -48,19 +48,36 @@ def touch_file(file_path, repo, created):
             current_dir_files = dict((f.path, f.sha) for f in current_dir_contents)
         except GithubException as e:
             #output: This repository is empty.
-            print(e.args[1]['message']) 
+            print(e.args[1]['message'])
     
     git_file_path = '/' + file_path
     print(file_path)
     print(current_dir_files.keys())
     
-    if file_path in current_dir_files.keys():
-        cur_sha = current_dir_files[file_path]
+    try:
+        # file already exists in repo
+        print(git_file_path, 'already exists')
+        current_file_content = repo.get_file_contents(path = git_file_path)
+        cur_sha = current_file_content.sha
         git_msg= 'updated {}'.format(file_path)
         repo.update_file(path = git_file_path, message = git_msg, content = filecontent, sha = cur_sha)
-    else:
+
+    except GithubException as e:
+        #output: File paht is not exists
+        print(e.args[1]['message'])
+        print(git_file_path, 'is new for dir')
         git_msg= 'added {}'.format(file_path)
         repo.create_file(path = git_file_path, message = git_msg, content = filecontent)
+
+
+#    
+#    if file_path in current_dir_files.keys():
+#        cur_sha = current_dir_files[file_path]
+#        git_msg= 'updated {}'.format(file_path)
+#        repo.update_file(path = git_file_path, message = git_msg, content = filecontent, sha = cur_sha)
+#    else:
+#        git_msg= 'added {}'.format(file_path)
+#        repo.create_file(path = git_file_path, message = git_msg, content = filecontent)
 
 
 
