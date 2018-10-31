@@ -32,7 +32,7 @@ github = oauth.remote_app(
 FILES = [
 'app.py',
 'README.md',
-'templates/index.html'
+'templates/index.html',
 'templates/test.txt'
 ]
 
@@ -40,25 +40,25 @@ def touch_file(file_path, repo, created):
     with open(file_path) as f:
         filecontent = f.read()
     
-    current_dir_files = {}
-    
-    if not created:
-        try:
-            # get repo content from root directory
-            current_dir_contents = repo.get_dir_contents(path = '')
-            current_dir_files = dict((f.path, f.sha) for f in current_dir_contents)
-        except GithubException as e:
-            #output: This repository is empty.
-            print(e.args[1]['message'])
-    
+#    current_dir_files = {}
+#    
+#    if not created:
+#        try:
+#            # get repo content from root directory
+#            current_dir_contents = repo.get_dir_contents(path = '')
+#            current_dir_files = dict((f.path, f.sha) for f in current_dir_contents)
+#        except GithubException as e:
+#            #output: This repository is empty.
+#            print(e.args[1]['message'])
+#    
     git_file_path = '/' + file_path
-    print(file_path)
-    print(current_dir_files.keys())
+#    print(file_path)
+#    print(current_dir_files.keys())
     
     try:
         # file already exists in repo
-        print(git_file_path, 'already exists')
         current_file_content = repo.get_file_contents(path = git_file_path)
+        print(git_file_path, 'already exists')
         cur_sha = current_file_content.sha
         git_msg= 'updated {}'.format(file_path)
         repo.update_file(path = git_file_path, message = git_msg, content = filecontent, sha = cur_sha)
