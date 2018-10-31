@@ -116,7 +116,9 @@ def replicate():
     files_statuses = {}
     for file in FILES:
         files_statuses[file] = touch_file(file, repo)
-
+    
+    print(jsonify(files_statuses))
+    return jsonify(files_statuses)
     return render_template_string(jsonify(files_statuses))
 
 @github.tokengetter
