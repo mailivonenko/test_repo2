@@ -16,8 +16,10 @@ GITHUB_CLIENT_SECRET = os.environ['GITHUB_CLIENT_SECRET']
 oauth = OAuth(app)
 github = oauth.remote_app(
     'github',
-    consumer_key='4607fa343e059f0dd456',
-    consumer_secret='ae78827b22cec87b0f1a969fde61c25114ae4818',
+    #consumer_key='4607fa343e059f0dd456',
+    #consumer_secret='ae78827b22cec87b0f1a969fde61c25114ae4818',
+    consumer_key=GITHUB_CLIENT_ID,
+    consumer_secret=GITHUB_CLIENT_SECRET,
     request_token_params={'scope': "user,repo"},
     base_url='https://api.github.com/',
     request_token_url=None,
@@ -77,6 +79,7 @@ def login():
 def logout():
     session.pop('github_token', None)
     session.pop('username', None)
+    session.clear()
     return redirect(url_for('index'))
 
 
