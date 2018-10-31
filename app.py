@@ -51,6 +51,8 @@ def touch_file(file_path, repo, created):
             print(e.args[1]['message']) 
     
     git_file_path = '/' + file_path
+    print(file_path)
+    print(current_dir_files.keys())
     
     if file_path in current_dir_files.keys():
         cur_sha = current_dir_files[file_path]
